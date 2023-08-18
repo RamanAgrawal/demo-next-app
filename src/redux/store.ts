@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-
+import cardReducer from './features/cardDataSlice'
 export const store=configureStore({
     reducer:{
-
+        card:cardReducer
     }
 })
 export type RootState=ReturnType<typeof store.getState>;
-export type AppDiapatch=typeof store.dispatch;
+export type AppDispatch=typeof store.dispatch;
