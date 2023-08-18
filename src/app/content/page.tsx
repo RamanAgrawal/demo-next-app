@@ -1,6 +1,6 @@
 "use client";
 import React, { FC, useEffect } from 'react'
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Card from '../components/Card';
 import { redirect } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,42 +8,40 @@ import { AppDispatch } from '../../redux/store'
 import { selectItems } from '../../redux/features/cardDataSlice'
 import { fetchData } from '@/redux/features/cardDetailsThunk';
 import Image from "next/image";
+import Navbar from '../components/Navbar';
 
-const Page = () => {
+const Page:FC = () => {
+
+    // Initialize Redux dispatch
     const dispatch = useDispatch<AppDispatch>()
+
+    // Get items from Redux store using selector
     const items = useSelector(selectItems)
 
-    useEffect(() => {
-        dispatch(fetchData())
-    }, [dispatch])
-    items?.forEach(item => (
-        console.log(item.fields.thumbnail.fields.file.url)
-
-    ))
-
     const { data: session } = useSession();
-    console.log(session);
 
+    // Fetch data when the component mounts
+    useEffect(() => {
+        if (session) {
+            dispatch(fetchData())
+        }
+    }, [dispatch, session])
 
-    //if user is not authenticated , will redirected to login page
+     // If user is not authenticated, redirect to login page
     if (!session) {
         redirect('/')
+        return null; // Return early to avoid rendering the rest of the component
     }
     return (
         <>
-
-            <nav className="h-16 bg-blue-500 fixed min-w-full">
-                <div className="flex justify-between p-4">
-                    <h1 className="text-2xl">Demo Next App</h1>
-                    <button
-                        onClick={() => signOut()}
-                        className="bg-red-500 p-2 rounded-md">Sign Out</button>
-                </div>
-            </nav>
+            {/* navbar component */}
+            <Navbar />
 
             <div className="h-screen min-[320px]:h-fit w-full pt-20 grid grid-cols-12 gap-4 p-7">
+
+                {/* Profile Details */}
                 <div className="col-span-3">
-                    <div className='h-96 flex flex-col justify-center rounded-md items-center shadow-sm p-4 bg-gray-400'>
+                    <div className='h-96 flex flex-col justify-center rounded-md items-center shadow-sm p-4 bg-gray-600'>
                         <Image
                             className='rounded-full'
                             src={session.user?.image || ''}
@@ -55,16 +53,20 @@ const Page = () => {
                         <h1>{session.user?.email}</h1>
                     </div>
                 </div>
+                <div className='col-span-9 p-4 pt-0'>
 
-                <div className="col-span-9 flex justify-around">
-                    {
-                        items.map((item: any, i) => (
-                            <div key={i}>
-                                <Card value={item.fields} />
-                            </div>
-                        ))
-                    }
-
+                    <h1 className='text-4xl bg-gray-400 mb-4 w-full rounded-md p-8'>My Recent Journey</h1>
+                    <div className=" flex justify-between">
+                        
+                        {/* Render cards */}
+                        {
+                            items.map((item: any, i) => (
+                                <div key={i}>
+                                    <Card value={item.fields} />
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
 
             </div>

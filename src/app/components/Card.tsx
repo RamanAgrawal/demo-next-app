@@ -1,27 +1,39 @@
 import React, { FC, useState } from 'react'
 import Image from "next/image";
-interface MyComponentProps {
-  value: any; // Add the value prop here
+interface CardProps {
+  value: any;  // The data for the card
 }
-const Card = ({ value }: MyComponentProps) => {
+const Card: FC<CardProps> = ({ value }) => {
+
+  // Todo:can add a feature ,when user click on a card a new box open below cards with details of cards
+
+  // State to control whether to show more content
   const [show, setShow] = useState<boolean>(false)
+
+  // Extracting and formatting the date from the prop
   const datetimeString = value.date;
   const date = new Date(datetimeString);
   const dateString = date.toISOString().split('T')[0];
 
   return (
-    <div onClick={() => setShow(!show)} className='w-60 bg-gray-400 p-2 rounded-md'>
+    <div className='w-60 bg-gray-600 p-2 rounded-md max-h-96 overflow-hidden '>
+
+      {/* Image fetched from Contentful */}
       <Image
         src={`https:${value.thumbnail.fields.file.url}`}
         alt={`Thumbnail for ${value.title}`}
         width={250}
         height={100}
       />
-      {/* <img src={`https:${value.thumbnail.fields.file.url}`} width={250} alt="" /> */}
+
       <h3>{dateString}</h3>
       <h4 className='text-lg text-black font-bold'>{value.title}</h4>
-      {show && <p>{value.description}</p>}
-      <button>Show more</button>
+
+      {/* Show the description if 'show' state is true */}
+      {show && <p className='max-h-24 overflow-y-scroll'>{value.description}</p>}
+
+      {/* Button to toggle the 'show' state */}
+      <button className='text-black hover:text-white' onClick={() => setShow(!show)}>{show?"Hide":"Show more"}</button>
     </div>
   )
 }
