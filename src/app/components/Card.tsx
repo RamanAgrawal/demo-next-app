@@ -1,7 +1,22 @@
 import React, { FC, useState } from 'react'
 import Image from "next/image";
+
+
+interface Thumbnail {
+  fields: {
+    file: {
+      url: string;
+    };
+  };
+}
+
 interface CardProps {
-  value: any;  // The data for the card
+  value: {
+    title: string;
+    date: string;
+    description: string;
+    thumbnail: Thumbnail;
+  };
 }
 const Card: FC<CardProps> = ({ value }) => {
 
