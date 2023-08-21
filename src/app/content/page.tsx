@@ -56,7 +56,7 @@ const Page:FC = () => {
                 <div className='col-span-9 p-4 pt-0'>
 
                     <h1 className='text-4xl bg-gray-400 mb-4 w-full rounded-md p-8'>My Recent Journey</h1>
-                    <div className=" flex justify-between">
+                    <div className=" flex flex-wrap justify-between">
                         
                         {/* Render cards */}
                         {
